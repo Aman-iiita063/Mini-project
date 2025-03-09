@@ -1,35 +1,40 @@
-import { createBrowserRouter } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
+import TakeAttendancePage from "./pages/TakeAttendancePage";
+import FacultyDashboard from "./pages/FacultyDashboard";
+import StudentDashboard from "./pages/StudentDashboard";
+import StudentList from "./pages/StudentListPage";
+import HomePage from "./pages/HomePage";
+import { SetStateAction } from "react";
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
 
-import { Applayout } from "./components/layouts/AppLayout";
+const AppRouter = () => {
+  return (
+    <Routes>
+      <Route path="/" element={<HomePage />} /> {/* Default route */}
+      {/* Faculty Dashboard with Nested Routes */}
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignupPage />} />
+      <Route path="/faculty-dashboard" element={<FacultyDashboard />}>
+        <Route path="take-attendance" element={<TakeAttendancePage />} />
+        <Route path="student-list" element={<StudentList />} />
+      </Route>
+      {/* Separate Routes */}
+      <Route path="/take-attendance" element={<TakeAttendancePage />} />
+      <Route path="/student-list" element={<StudentList />} />
+      <Route
+        path="/student-dashboard"
+        element={
+          <StudentDashboard
+            darkMode={false}
+            setDarkMode={function (value: SetStateAction<boolean>): void {
+              throw new Error("Function not implemented.");
+            }}
+          />
+        }
+      />
+    </Routes>
+  );
+};
 
-import NoMatch from "./pages/NoMatch";
-import Dashboard from "./pages/Dashboard";
-import Empty from "./pages/Empty";
-import Sample from "./pages/Sample";
-
-export const router = createBrowserRouter([
-    {
-        path: "/",
-        element: <Applayout />,
-        children: [
-            {
-                path: "",
-                element: <Dashboard />,
-            },
-            {
-                path: "sample",
-                element: <Sample />,
-            },
-            {
-                path: "empty",
-                element: <Empty />,
-            },
-        ],
-    },
-    {
-        path: "*",
-        element: <NoMatch />,
-    },
-], {
-    basename: global.basename
-})
+export default AppRouter;
