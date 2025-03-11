@@ -33,6 +33,11 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 
 // Define interfaces
+// interface StudentDashboardProps {
+//   darkMode: boolean;
+//   setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
+// }
+
 interface CourseAttendance {
   courseId: string;
   courseName: string;

@@ -22,17 +22,7 @@ const AppRouter = () => {
       {/* Separate Routes */}
       <Route path="/take-attendance" element={<TakeAttendancePage />} />
       <Route path="/student-list" element={<StudentList />} />
-      <Route
-        path="/student-dashboard"
-        element={
-          <StudentDashboard
-            darkMode={false}
-            setDarkMode={function (value: SetStateAction<boolean>): void {
-              throw new Error("Function not implemented.");
-            }}
-          />
-        }
-      />
+      <Route path="/student-dashboard" element={<StudentDashboard />} />
     </Routes>
   );
 };
