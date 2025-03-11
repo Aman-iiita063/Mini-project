@@ -1,70 +1,233 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { Eye, EyeOff, User, Lock } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { Eye, EyeOff, User, Lock, School, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-import icon1 from "../assets/icon1.jpg";
 import { toast } from "sonner";
 
+import icon1 from "../assets/icon1.jpg";
+
 const LoginPage: React.FC = () => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     userId: "",
     password: "",
   });
+  const [darkMode, setDarkMode] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  // Update theme when darkMode changes
+  React.useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [darkMode]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Add your login logic here
-    console.log("Login attempted with:", formData);
-    toast.success("Login Successful", {
-      description: "Welcome back!",
-    });
+    setLoading(true);
+
+    // Simulate API call
+    try {
+      // Add your login logic here
+      console.log("Login attempted with:", formData);
+
+      // Simulate network delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      toast.success("Login Successful", {
+        description: "Welcome back to the Faculty Dashboard!",
+      });
+
+      // Redirect to faculty dashboard
+      navigate("/faculty-dashboard");
+    } catch (error) {
+      toast.error("Login Failed", {
+        description: "Please check your credentials and try again.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        delayChildren: 0.3,
+        staggerChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { duration: 0.5 },
+    },
+  };
+
+  const buttonVariants = {
+    hover: { scale: 1.03 },
+    tap: { scale: 0.97 },
   };
 
   return (
-    <div className="flex min-h-screen font-sans bg-gray-100 dark:bg-gray-900">
+    <div className={`flex min-h-screen font-sans ${darkMode ? "dark" : ""}`}>
+      {/* Background gradient elements */}
+      <div className="fixed inset-0 overflow-hidden opacity-30 dark:opacity-20 pointer-events-none z-0">
+        <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-[#6D28D9]/20 filter blur-[100px]" />
+        <div className="absolute top-1/3 -left-20 w-72 h-72 rounded-full bg-purple-500/20 filter blur-[80px]" />
+        <div className="absolute bottom-0 right-1/4 w-64 h-64 rounded-full bg-indigo-500/10 filter blur-[60px]" />
+      </div>
+
       {/* Left Section with Illustration */}
-      <div className="hidden w-1/2 bg-gradient-to-br from-blue-400 to-blue-500 lg:flex flex-col items-center justify-center relative p-12">
-        <div className="max-w-md mx-auto mb-8">
-          <img
-            src={icon1 || "/placeholder.svg"}
-            alt="Illustration"
-            className="w-full h-auto rounded-lg shadow-2xl"
+      <div className="hidden w-1/2 bg-gradient-to-br from-[#6D28D9] to-purple-500 dark:from-purple-800 dark:to-indigo-900 lg:flex flex-col items-center justify-center relative p-12 overflow-hidden">
+        {/* Animated circles background */}
+        <div className="absolute inset-0 overflow-hidden">
+          <motion.div
+            initial={{ opacity: 0.7 }}
+            animate={{ opacity: 0.3 }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              repeatType: "reverse",
+            }}
+            className="absolute top-[10%] left-[15%] w-64 h-64 rounded-full bg-white/20 filter blur-md"
+          />
+          <motion.div
+            initial={{ opacity: 0.5 }}
+            animate={{ opacity: 0.2 }}
+            transition={{
+              duration: 5,
+              repeat: Infinity,
+              repeatType: "reverse",
+              delay: 1,
+            }}
+            className="absolute bottom-[20%] right-[10%] w-80 h-80 rounded-full bg-white/10 filter blur-md"
           />
         </div>
-        <div className="text-center text-white">
-          <h2 className="text-3xl font-bold mb-4">
-            Streamlined Attendance Tracking
-          </h2>
-          <p className="text-xl opacity-90">IIIT ALLAHABAD</p>
-        </div>
+
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          className="max-w-md mx-auto mb-8 relative z-10"
+        >
+          <div className="bg-white/10 backdrop-blur-sm p-6 rounded-2xl shadow-2xl">
+            <img
+              src={icon1 || "/placeholder.svg"}
+              alt="Illustration"
+              className="w-full h-auto rounded-lg"
+            />
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="text-center text-white relative z-10"
+        >
+          <h2 className="text-3xl font-bold mb-4">Student Dashboard</h2>
+          <div className="flex items-center justify-center space-x-2 mb-6">
+            <School className="h-6 w-6" />
+            <p className="text-xl font-medium">IIIT ALLAHABAD</p>
+          </div>
+          <p className="text-white/80 max-w-md">
+            Streamline your classroom management with our comprehensive
+            attendance tracking system
+          </p>
+        </motion.div>
       </div>
 
       {/* Right Section with Login Form */}
-      <div className="w-full lg:w-1/2 bg-white dark:bg-gray-800 flex items-center justify-center p-8">
-        <div className="max-w-md w-full space-y-8">
-          <div>
-            <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-2">
+      <div className="w-full lg:w-1/2 bg-gray-50 dark:bg-gray-900 flex items-center justify-center p-8 relative">
+        {/* Dark mode toggle */}
+        <motion.button
+          onClick={() => setDarkMode(!darkMode)}
+          className="absolute top-4 right-4 p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-[#6D28D9] dark:focus:ring-purple-400"
+          whileHover={{
+            scale: 1.1,
+            backgroundColor: darkMode
+              ? "rgba(55, 65, 81, 0.9)"
+              : "rgba(243, 244, 246, 0.9)",
+          }}
+          whileTap={{ scale: 0.9 }}
+        >
+          {darkMode ? (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+                clipRule="evenodd"
+              />
+            </svg>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+            </svg>
+          )}
+        </motion.button>
+
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="max-w-md w-full space-y-8 bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg"
+        >
+          <motion.div variants={itemVariants}>
+            <div className="flex items-center justify-center mb-4">
+              <span className="p-2 rounded-full bg-[#6D28D9]/10 dark:bg-purple-900/30">
+                <BookOpen className="h-8 w-8 text-[#6D28D9] dark:text-purple-400" />
+              </span>
+            </div>
+            <h1 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-2">
               Welcome Back
             </h1>
-            <p className="text-gray-600 dark:text-gray-400">
-              Login to your account to continue
+            <p className="text-center text-gray-600 dark:text-gray-400">
+              Login to your faculty account to continue
             </p>
-          </div>
+          </motion.div>
 
-          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+          <motion.form
+            variants={itemVariants}
+            onSubmit={handleSubmit}
+            className="mt-8 space-y-6"
+          >
             <div className="space-y-4">
               <div>
-                <Label htmlFor="userId">User ID</Label>
-                <div className="relative">
+                <Label
+                  htmlFor="userId"
+                  className="text-gray-700 dark:text-gray-300"
+                >
+                  User ID
+                </Label>
+                <div className="relative mt-1">
                   <User
                     className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
                     size={18}
@@ -74,7 +237,7 @@ const LoginPage: React.FC = () => {
                     name="userId"
                     type="text"
                     required
-                    className="pl-10"
+                    className="pl-10 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                     placeholder="Enter your user id"
                     value={formData.userId}
                     onChange={handleInputChange}
@@ -83,8 +246,13 @@ const LoginPage: React.FC = () => {
               </div>
 
               <div>
-                <Label htmlFor="password">Password</Label>
-                <div className="relative">
+                <Label
+                  htmlFor="password"
+                  className="text-gray-700 dark:text-gray-300"
+                >
+                  Password
+                </Label>
+                <div className="relative mt-1">
                   <Lock
                     className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
                     size={18}
@@ -94,7 +262,7 @@ const LoginPage: React.FC = () => {
                     name="password"
                     type={showPassword ? "text" : "password"}
                     required
-                    className="pl-10 pr-10"
+                    className="pl-10 pr-10 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
                     placeholder="Enter your password"
                     value={formData.password}
                     onChange={handleInputChange}
@@ -102,7 +270,7 @@ const LoginPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
@@ -116,11 +284,11 @@ const LoginPage: React.FC = () => {
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-[#6D28D9] focus:ring-[#6D28D9] border-gray-300 rounded"
                 />
                 <label
                   htmlFor="remember-me"
-                  className="ml-2 block text-sm text-gray-900 dark:text-gray-300"
+                  className="ml-2 block text-sm text-gray-700 dark:text-gray-300"
                 >
                   Remember me
                 </label>
@@ -129,32 +297,69 @@ const LoginPage: React.FC = () => {
               <div className="text-sm">
                 <Link
                   to="/forgot-password"
-                  className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+                  className="font-medium text-[#6D28D9] hover:text-purple-500 dark:text-purple-400 dark:hover:text-purple-300"
                 >
-                  Forgot your password?
+                  Forgot password?
                 </Link>
               </div>
             </div>
 
-            <Button type="submit" className="w-full">
-              Sign in
-            </Button>
-          </form>
+            <motion.div variants={itemVariants}>
+              <motion.button
+                type="submit"
+                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#6D28D9] hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#6D28D9] disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={loading}
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
+              >
+                {loading ? (
+                  <svg
+                    className="animate-spin h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                ) : (
+                  "Sign in"
+                )}
+              </motion.button>
+            </motion.div>
+          </motion.form>
 
-          <div className="mt-6">
+          <motion.div variants={itemVariants} className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300"></div>
+                <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white dark:bg-gray-800 text-gray-500">
+                <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">
                   Or continue with
                 </span>
               </div>
             </div>
 
             <div className="mt-6 grid grid-cols-2 gap-3">
-              <Button variant="outline" className="w-full">
+              <motion.button
+                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
+              >
                 <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                   <path
                     fill="#EA4335"
@@ -174,8 +379,13 @@ const LoginPage: React.FC = () => {
                   />
                 </svg>
                 Google
-              </Button>
-              <Button variant="outline" className="w-full">
+              </motion.button>
+              <motion.button
+                className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-800 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
+              >
                 <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                   <path
                     fill="#1877F2"
@@ -183,20 +393,23 @@ const LoginPage: React.FC = () => {
                   />
                 </svg>
                 Facebook
-              </Button>
+              </motion.button>
             </div>
-          </div>
+          </motion.div>
 
-          <p className="mt-10 text-center text-sm text-gray-600 dark:text-gray-400">
-            Not a member?{" "}
+          <motion.p
+            variants={itemVariants}
+            className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400"
+          >
+            Don't have an account?{" "}
             <Link
               to="/signup"
-              className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+              className="font-medium text-[#6D28D9] hover:text-purple-500 dark:text-purple-400 dark:hover:text-purple-300"
             >
-              Sign up now
+              Contact administrator
             </Link>
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
       </div>
     </div>
   );
